@@ -1,7 +1,7 @@
 **Recommend Trigger**: Command - **Trigger Text**: mutemyself\
 **Description**: Mute your self with specific time\
 **Usage**: -mutemyself <time>\
-**Code**: below\
+**Code**: below
 
 ```lua
 {{$args := parseArgs 1 "-mutemyself <time>" (carg "duration" "")}}
