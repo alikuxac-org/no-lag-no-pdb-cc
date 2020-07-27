@@ -1,6 +1,6 @@
 **Recommend Trigger Type**: Regex - **Trigger Text**: `<?https://(ptb.|canary.)?(discordapp\.com|discord\.com)/channels\/\d+\/(\d+)\/(\d+)>?`\
 **Description**: Quote the message\
-**Usage**: Get message link and post in any channel yout want\
+**Usage**: Get message link and post in any channel you want\
 **Code**:
 
 ```lua
