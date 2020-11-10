@@ -15,6 +15,8 @@
 6. Upload avatar circle, fill out `$AVATAR_CIRCLE`.
 7. Enjoy, use `-rank`
 
+[Image for background, avatar circle](https://imgur.com/a/9zAAZBS)
+
 # Code
 
 ```lua
