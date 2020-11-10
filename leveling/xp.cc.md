@@ -8,7 +8,7 @@
 # Instructions
 
 1. Sign up for Imagekit. Fill out `$IMAGEKIT_USERNAME`.
-2. Add the Discord CDN as an endpoint.
+2. Add the Discord CDN as an endpoint. Follow this [Link](https://gist.github.com/alikuxac/0d4c29c523aa5df4f7a6e043482fe695)
 3. Upload the Century Gothic font TTF file. Fill out `$CENTURY_GOTHIC_URL`.
 4. Same with the Lucida Sans TTF file.
 5. Upload a background, fill out `$BACKGROUND_URL`. Size is 934 x 282 pixels.
