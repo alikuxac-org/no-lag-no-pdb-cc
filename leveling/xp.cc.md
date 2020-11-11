@@ -121,7 +121,7 @@
 	{{ end }}
 {{ end }}
 
-{{ $err := "" }}{{ $user := .User}}{{$color := "FF0000"}}
+{{ $err := "" }}{{ $user := .User}}{{$color := "FF0000"}}{{$colorSet:=false}}
 {{ with .CmdArgs }}
 	{{ $temp := userArg (index . 0) }}
 	{{ if $temp }}
