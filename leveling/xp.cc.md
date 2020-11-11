@@ -121,16 +121,40 @@
 	{{ end }}
 {{ end }}
 
-{{ $err := "" }}{{ $user := .User}}
-{{ if .CmdArgs }}
-    {{ $temp := index .CmdArgs 0 | userArg }}{{ if $temp}}{{ $user = $temp }}{{ else }}{{ $err = "User not found." }}{{ end }}
-{{end}}
-{{ if $user }}
+{{ $err := "" }}{{ $user := .User}}{{$color := "FF0000"}}
+{{ with .CmdArgs }}
+	{{ $temp := userArg (index . 0) }}
+	{{ if $temp }}
+		{{ $user = $temp }}
+		
+	{{ else if and (eq (index . 0) "set-color") (ge (len .) 2) }}
+		{{ $colorSet = true }}
+		{{ $multipliers := cslice 1048576 65536 4096 256 16 1 }}
+		{{ $hex2dec := sdict "A" 10 "B" 11 "C" 12 "D" 13 "E" 14 "F" 15 }}
+		{{ with reFindAllSubmatches `\A(?:#?default|([a-fA-F\d]{1,6}))\z` (joinStr " " (slice . 1)) }}
+			{{ $hex := "D92C43" }}
+			{{ with index . 0 1 }}
+				{{ $hex = (printf "%06s" .) | upper }}
+			{{ end }}
+			{{ $dec := 0 }}
+			{{ range $k, $v := split $hex "" -}}
+				{{- $multiplier := index $multipliers $k }}
+				{{- $num := or ($hex2dec.Get $v) $v}}
+				{{- $dec = add $dec (mult $num $multiplier) -}}
+			{{ end }}
+			{{ dbSet $user.ID "xpColor" (str $dec) }}
+			{{ $user.Mention }}, I set your rank card color to `#{{ $hex }}`.
+		{{ else }}
+			Please provide a valid hex to set your rank card color to.
+		{{ end }}
+	{{ end }}
+{{ end }}
+{{ if not $colorSet }}
     {{$name := or (getMember $user.ID).Nick $user.Username}}
 	{{ $data := sdict "Avatar" (print $user.ID "@@" $user.Avatar ".webp") "Name" $user.Username}}
-	{{$dbuser := sdict}}{{with (dbGet $user.ID "user")}}{{$dbuser = sdict .Value}}{{end}}
-    {{$color := "FF0000"}}{{with ($dbuser.Get "color")}}{{$color = printf "%06x" . | upper}}{{end}}
-    {{$data.Set "Color" (str $color)}}
+	{{ with dbGet $user.ID "xpColor" }} {{ $color = .Value | toInt}} {{ end }}
+	{{$color = printf "%06X" $color | upper}}
+	{{$data.Set "Color" (str $color )}}
     {{ $xp := 0 }}{{with (dbGet $user.ID "xp")}}{{$xp = .Value}}{{end}}
 
     {{$level := roundFloor (mult 0.1 (sqrt $xp))}}
@@ -207,7 +231,7 @@
 			"image" (sdict "url" $url)
 			"footer" (sdict "text" "The image may take a while to load.")
 		) }}
-		
+		{{$color}}
 	{{ end }}
     {{ end }}
 {{ if $err }} {{ .User.Mention }} **::** {{ $err }} {{ end }}
