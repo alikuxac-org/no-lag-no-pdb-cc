@@ -14,10 +14,11 @@
 {{$userex:=$settings.Get "user"}}
 {{$chanex:=$settings.Get "channel"}}
 {{$roleex:=$settings.Get "role"}}
-{{range $member.Roles}}{{- if inFold $roleex (str .)}}{{- $isExclude =true -}}{{end}}{{end}}
-{{ if inFold $userex (str $user.ID)}}{{$isExclude =true}}{{end}}
+{{$cateex:=$settings.Get "category"}}
+{{range .Member.Roles}}{{- if inFold $roleex (str .)}}{{- $isExclude =true -}}{{end}}{{end}}
+{{ if inFold $userex (str .User.ID)}}{{$isExclude =true}}{{end}}
 {{ if inFold $chanex (str .Channel.ID)}}{{$isExclude =true}}{{end}}
-{{ if inFold $cateex (str $chan.ParentID)}}{{$isExclude =true}}{{end}}
+{{ if inFold $cateex (str .Channel.ParentID)}}{{$isExclude =true}}{{end}}
 
 {{ if (dbGet .User.ID "xpCooldown") }} {{ $cooldown = true }} {{ end }}
 {{if and (not $cooldown) $settings }}
