@@ -31,9 +31,9 @@
 		"cooldown" .TimeMinute
 		"announce" "true"
 		"exclude" (sdict "user" (cslice) "role" (cslice) "channel" (cslice) "category" (cslice))
-	 }} {{/* Defaults for level settings */ }}
+	}} {{/* Defaults for level settings */}}
 	{{ with (dbGet 0 "xpSettings") }}
-		{{ $isSaved = true }} {{/* Settings are in DB */ }}
+		{{ $isSaved = true }} {{/* Settings are in DB */}}
 		{{ $currentSettings = sdict .Value }} {{/* Convert value to sdict */}}
 	{{ end }}
 
@@ -58,7 +58,7 @@
 				{{ end }}
 			{{ end }}
 		{{ else }}
-			That was not a valid key. The only valid settings are "min", "max", "announce", and "cooldown".
+			That was not a valid key. The only valid settings are "min", "max", "announce", "cooldown" and "announce".
 		{{ end }}
 
 	{{ else if and (eq (index .CmdArgs 0) "set-channel") (ge (len .CmdArgs) 2) }}
@@ -86,8 +86,8 @@
 			(humanizeDurationSeconds ($currentSettings.cooldown | toDuration))
 			$channel
 			$currentSettings.announce
-		 }} {{/* Construct the embed description */ }}
-		{{ if $isSaved }} {{/* If the settings are in DB */ }}
+		 }} {{/* Construct the embed description */}}
+		{{ if $isSaved }} {{/* If the settings are in DB */}}
 			{{ sendMessage nil (cembed "title" "Level Settings" "description" $formatted "thumbnail" (sdict "url" "https://i.imgur.com/mJ7zu6k.png")) }}
 		{{ else }}
 			This server has not set up the leveling system. Run `-leveling use-default` to use the default settings or customize it using `-leveling set <key> <value>`.
