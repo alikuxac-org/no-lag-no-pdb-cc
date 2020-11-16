@@ -76,7 +76,7 @@
 	1,000 - 9,999 -> 1.01k (example)
 	10,000 - 99,999 -> 10.1k (example)
 	100,000 -> 999,999 -> 999k (example)
-	1,000,000 -> 9,999,999 -> 1.01m 
+	1,000,000 -> 9,999,999 -> 1.01m
 	...
 */ }}
 {{ define "shortenNumber"  }}
@@ -126,13 +126,13 @@
 	{{ $temp := userArg (index . 0)  }}
 	{{ if $temp  }}
 		{{ $user = $temp  }}
-		
+
 	{{ else if and (eq (index . 0) "set-color") (ge (len .) 2)  }}
 		{{ $colorSet = true  }}
 		{{ $multipliers := cslice 1048576 65536 4096 256 16 1  }}
 		{{ $hex2dec := sdict "A" 10 "B" 11 "C" 12 "D" 13 "E" 14 "F" 15  }}
 		{{ with reFindAllSubmatches `\A(?:#?default|([a-fA-F\d]{1,6}))\z` (joinStr " " (slice . 1))  }}
-			{{ $hex := "D92C43"  }} {{/*Change default color here*/ }}
+			{{ $hex := "FF0000"  }} {{/*Change default color here*/ }}
 			{{ with index . 0 1  }}
 				{{ $hex = (printf "%06s" .) | upper  }}
 			{{ end  }}
@@ -167,7 +167,7 @@
 	{{ $nextLvl := add $level 1 }}
 	{{ $total := sub (mult 100 $nextLvl $nextLvl) (mult 100 $level $level) }}
 	{{ $data.Set "Total" (toInt $total) }}
-    
+
 	{{ if not $err   }}
 		{{ $bar := ""  }}
 		{{/*
@@ -182,32 +182,32 @@
 			Name needs to be encoded in base64 as it can contain special characters.
 			Current, total XP, level, and rank need to be encoded as well as they can contain the '.' character.
         */ }}
-        
+
 		{{ $query := sdict "Input" $data.Name  }}
 		{{ template "toBase64" $query  }}
 		{{ $name := urlquery $query.Result  }}
-        
+
 		{{ $query := sdict "Input" $data.Total "Font" "Lucida Sans"  }}
 		{{ template "shortenNumber" $query  }}
 		{{ $totalX := sub 831 $query.Width  }} {{/* X coordinate at which to insert the total XP */ }}
 		{{ $query.Set "Input" (print "/ " $query.Result " XP")  }}
 		{{ template "toBase64" $query  }}
 		{{ $total := urlquery $query.Result  }}
-        
+
 		{{ $query := sdict "Input" $data.Current "Font" "Lucida Sans"  }}
 		{{ template "shortenNumber" $query  }}
 		{{ $currentX := sub $totalX 1 $query.Width  }}
 		{{ $query.Set "Input" $query.Result  }}
 		{{ template "toBase64" $query  }}
 		{{ $current := urlquery $query.Result  }}
-        
+
 		{{ $query := sdict "Input" $data.Level "Font" "Century Gothic"  }}
 		{{ template "shortenNumber" $query  }}
 		{{ $levelX := sub 860 $query.Width  }}
 		{{ $query.Set "Input" ($query.Result)  }}
 		{{ template "toBase64" $query  }}
 		{{ $level := urlquery $query.Result  }}
-	
+
 		{{ $base := print "https://ik.imagekit.io/" $IMAGEKIT_USERNAME "/"  }}
 		{{/* Using printf instead of print here (in most cases) so its clearer what transitions do */ }}
 		{{ $transformations := cslice
@@ -220,7 +220,7 @@
 			(printf "ots-24,otf-%s,otc-FFFFFF,ote-%s,ox-%d,oy-135" $LUCIDA_SANS_URL $current $currentX)
 			(printf "otf-%s,ote-%s,ots-50,ox-%d,oy-50,otc-%s" $CENTURY_GOTHIC_URL $level $levelX $data.Color)
 			(printf "otf-%s,ot-LEVEL,ots-26,otc-%s,ox-%d,oy-75" $LUCIDA_SANS_URL $data.Color (sub $levelX 75))
-			
+
 		 }}
 
 		{{ $url := print $base "tr:" (joinStr ":" $transformations.StringSlice) "/" $BACKGROUND_URL  }}
