@@ -1,3 +1,17 @@
+# Role Rewards
+
+- Description: This command manages the role rewards of the server.
+- Usage:
+	`-rr add <level> <role name>` | Adds a role reward to given level in range 1-100. Max 1 per level.
+    `-rr remove <level>` | Removes role reward from level.
+    `-rr set-type <stack|highest>` | Sets type of role giving.
+    `-rr view` | Views current setup
+    `-rr reset` | Resets the settings
+- Trigger type: **Regex**
+- Trigger text: `\A(-|<@!?204255221017214977>)\s*(role-?rewards|rr)(\s+|\z)`
+
+# Code
+```lua
 {{/* Help message */}}
 {{  $helpMsg := cembed
 	"title" "🏆 Role Rewards"
@@ -100,3 +114,4 @@
 {{  else  }}
 	{{  sendMessage nil $helpMsg  }}
 {{  end  }}
+```
