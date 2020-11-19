@@ -1,18 +1,4 @@
-# Role Rewards
-
-- Description: This command manages the role rewards of the server.
-- Usage:
-	`-rr add <level> <role name>` | Adds a role reward to given level in range 1-100. Max 1 per level.
-    `-rr remove <level>` | Removes role reward from level.
-    `-rr set-type <stack|highest>` | Sets type of role giving.
-    `-rr view` | Views current setup
-    `-rr reset` | Resets the settings
-- Trigger type: **Regex**
-- Trigger text: `\A(-|<@!?204255221017214977>)\s*(role-?rewards|rr)(\s+|\z)`
-
-# Code
-```lua
-{{ /* Help message */ }}
+{{/* Help message */}}
 {{  $helpMsg := cembed
 	"title" "🏆 Role Rewards"
 	"description" (joinStr "\n\n"
@@ -25,40 +11,40 @@
 	"color" 14232643
  }}
 {{  if .CmdArgs  }}
-	{{  $roleRewards := sdict "type" "stack"  }} {{ /* The default setup */ }}
+	{{  $roleRewards := sdict "type" "stack"  }} {{/* The default setup */}}
 	{{  with (dbGet 0 "roleRewards")  }}
-		{{  $roleRewards = sdict .Value  }} {{ /* Update with DB entry if present */ }}
+		{{  $roleRewards = sdict .Value  }} {{/* Update with DB entry if present */}}
 	{{  end  }}
-	{{  $cmd := index .CmdArgs 0  }} {{ /* The subcommand used for convenience */ }}
+	{{  $cmd := index .CmdArgs 0  }} {{/* The subcommand used for convenience */}}
 
 	{{  if and (eq $cmd "add") (ge (len .CmdArgs) 3)  }}
-		{{  $level := index .CmdArgs 1 | toInt  }} {{ /* The level for this role reward */ }}
-		{{  $input := slice .CmdArgs 2 | joinStr " " | lower  }} {{ /* The role name in lowercase */ }}
+		{{  $level := index .CmdArgs 1 | toInt  }} {{/* The level for this role reward */}}
+		{{  $input := slice .CmdArgs 2 | joinStr " " | lower  }} {{/* The role name in lowercase */}}
 
-		{{ /* Exact match (irregardless of case) */ }}
+		{{/* Exact match (irregardless of case) */}}
 		{{  $exactRole := 0  }}
-		{{ /* Match from inFold */ }}
+		{{/* Match from inFold */}}
 		{{  $maybeRole := 0  }}
 
 		{{  with reFindAllSubmatches `^<@&(\d{17,19})>|(\d{17,19})$` $input  }}
 			{{  $id := toInt (or (index . 0 1) (index . 0 2))  }}
 			{{  range $.Guild.Roles  }}
-				{{ - if eq .ID $id  }} {{  $exactRole = .  }} {{  end - }}
+				{{- if eq .ID $id  }} {{  $exactRole = .  }} {{  end -}}
 			{{  end  }}
 		{{  else  }}
 			{{  range .Guild.Roles  }}
-				{{ - if eq (lower .Name) (lower $input)  }} {{  $exactRole = .  }}
-				{{ - else if inFold (lower .Name) (lower $input)  }} {{  $maybeRole = .  }}
-				{{ - end - }}
+				{{- if eq (lower .Name) (lower $input)  }} {{  $exactRole = .  }}
+				{{- else if inFold (lower .Name) (lower $input)  }} {{  $maybeRole = .  }}
+				{{- end -}}
 			{{  end  }}
 		{{  end  }}
 
 		{{  $role := or $exactRole $maybeRole  }}
-		{{ /* If there is both level and role */ }}
+		{{/* If there is both level and role */}}
 		{{  if and $level $role  }}
-			{{  if and (ge $level 1) (le $level 200)  }} {{ /* If level is in correct range */ }}
+			{{  if and (ge $level 1) (le $level 200)  }} {{/* If level is in correct range */}}
 				{{  $roleRewards.Set (str $level) $role.ID  }}
-				{{  $s := dbSet 0 "roleRewards" $roleRewards  }} {{ /* Save settings */ }}
+				{{  $s := dbSet 0 "roleRewards" $roleRewards  }} {{/* Save settings */}}
 				Successfully set the role `{{  $role.Name  }}` to be given at the level `{{  $level  }}`.
 			{{  else  }}
 				Sorry, the level provided was not in the range 1-200.
@@ -69,20 +55,20 @@
 
 	{{  else if and (eq $cmd "set-type") (ge (len .CmdArgs) 2)  }}
 		{{  $type := index .CmdArgs 1  }}
-		{{  if not (in (cslice "stack" "highest") $type)  }} {{ /* Check whether type is valid */ }}
+		{{  if not (in (cslice "stack" "highest") $type)  }} {{/* Check whether type is valid */}}
 			Sorry, that was not a valid type. The type must be either "stack" or "highest".
 		{{  else  }}
 			{{  $roleRewards.Set "type" $type  }}
-			{{  $s := dbSet 0 "roleRewards" $roleRewards  }} {{ /* Save settings */ }}
+			{{  $s := dbSet 0 "roleRewards" $roleRewards  }} {{/* Save settings */}}
 			Successfully set the role-giving type of this server to `{{  $type  }}`.
 		{{  end  }}
 
 	{{  else if eq $cmd "reset"  }}
-		{{  $s := dbSet 0 "roleRewards" (sdict "type" "stack")  }} {{ /* We set the settings to default */ }}
+		{{  $s := dbSet 0 "roleRewards" (sdict "type" "stack")  }} {{/* We set the settings to default */}}
 		Alright, I cleared the role rewards for this server!
 
 	{{  else if and (eq $cmd "remove") (ge (len .CmdArgs) 2)  }}
-		{{  with (reFind `\d+` (index .CmdArgs 1))  }} {{ /* Find level to remove */ }}
+		{{  with (reFind `\d+` (index .CmdArgs 1))  }} {{/* Find level to remove */}}
 			{{  if $roleRewards.Get .  }}
 				{{  $roleRewards.Del .  }}
 				{{  $s := dbSet 0 "roleRewards" $roleRewards  }}
@@ -95,16 +81,16 @@
 		{{  end  }}
 
 	{{  else if eq $cmd "view"  }}
-		{{  if eq (len $roleRewards) 1  }} {{ /* If it is still the default settings */ }}
+		{{  if eq (len $roleRewards) 1  }} {{/* If it is still the default settings */}}
 			{{  sendMessage nil (cembed "title" "Role Rewards" "thumbnail" (sdict "url" "https://i.imgur.com/mJ7zu6k.png") "description" (joinStr "" "**❯ Role Rewards:** n/a\n**❯ Type:** " $roleRewards.type))  }}
 		{{  else  }}
-			{{  $out := ""  }} {{ /* The embed description */ }}
-			{{ - range $level := seq 1 201 - }} {{ /* We can do this as we know level roles are in range 1-100 */ }}
-				{{  with ($roleRewards.Get (str $level))  }}
-					{{  $out = printf "%s\n❯ **Level %d:** <@&%d>" $out $level .  }}
-				{{  end  }}
-			{{ - end - }}
-			{{ /* Format and send embed */ }}
+			{{  $out := ""  }} {{/* The embed description */}}
+			{{ range $level := seq 1 201 }} {{/* We can do this as we know level roles are in range 1-100 */}}
+				{{-  with ($roleRewards.Get (str $level))  }}
+					{{-  $out = printf "%s\n❯ **Level %d:** <@&%d>" $out $level .  }}
+				{{-  end  }}
+			{{- end -}}
+			{{/* Format and send embed */}}
 			{{  sendMessage nil (cembed "title" "Role Rewards" "thumbnail" (sdict "url" "https://i.imgur.com/mJ7zu6k.png") "description" (joinStr "" $out "\n\n" "**❯ Type:** " $roleRewards.type))  }}
 		{{  end  }}
 
@@ -114,4 +100,3 @@
 {{  else  }}
 	{{  sendMessage nil $helpMsg  }}
 {{  end  }}
-```
