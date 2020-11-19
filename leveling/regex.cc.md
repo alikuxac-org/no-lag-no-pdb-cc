@@ -15,7 +15,7 @@
 {{ $chanex:=$settings.Get "channel" }}
 {{ $roleex:=$settings.Get "role" }}
 {{ $cateex:=$settings.Get "category" }}
-{{ range .Member.Roles }}{{ - if inFold $roleex (str .) }}{{ - $isExclude =true - }}{{ end }}{{ end }}
+{{ range .Member.Roles }}{{- if inFold $roleex (str .) -}}{{ $isExclude =true -}}{{ end }}{{ end }}
 {{  if inFold $userex (str .User.ID) }}{{ $isExclude =true }}{{ end }}
 {{  if inFold $chanex (str .Channel.ID) }}{{ $isExclude =true }}{{ end }}
 {{  if inFold $cateex (str .Channel.ParentID) }}{{ $isExclude =true }}{{ end }}
@@ -40,10 +40,10 @@
 		{{ if $toAdd }}{{ addRoleID $toAdd }}{{ end }}
 		{{ $embed := cembed "title" "❯ Level up!"
 			"thumbnail" (sdict "url" "https://webstockreview.net/images/emoji-clipart-celebration-4.png")
-			"description" (printf "Congrats **%s**! You just leveling to %d " (or $user.String $member.Nick) (toInt $newLvl))
+			"description" (printf "Congrats **%s**! You just leveling to %d " (or .User.String .Member.Nick) (toInt $newLvl))
 			"color" 14232643
 		 }}
-		{{ if eq $settings.announce "true" }}{{ sendMessage $channelstg (complexMessage "content" $user.Mention "embed" $embed) }}{{ end }}
+		{{ if eq $settings.announce "true" }}{{ sendMessage $channelstg (complexMessage "content" .User.Mention "embed" $embed) }}{{ end }}
 	{{ end }}
 
 	{{  $cooldownSeconds := div $settings.cooldown 1000000000  }} {{ /* Convert cooldown to seconds */ }}
