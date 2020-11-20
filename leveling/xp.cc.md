@@ -20,40 +20,40 @@
 # Code
 
 ```lua
-{{/*Modified version with Rank Card*/ }}
+{{/*Modified version with Rank Card*/}}
 {{ $IMAGEKIT_USERNAME := "Imagekit_Username"  }}
 {{ $LUCIDA_SANS_URL := "LucidaSansRegular.ttf"  }}
 {{ $CENTURY_GOTHIC_URL := "Century_Gothic.ttf"  }}
 {{ $BACKGROUND_URL := `3-generated.png`  }}
 {{ $AVATAR_CIRCLE := `3-avatar-hole.png`  }}
 
-{{/* Implementation originally written by Satty, refactored & commented by Joe. */ }}
+{{/* Implementation originally written by Satty, refactored & commented by Joe. */}}
 {{ define "toBase64"  }}
 	{{ $ENDINGS := dict 3.0 "=" 2.0 "=="  }}
 	{{ $octal := ""  }}
 	{{ range toByte .Input  }}
-		{{- $octal = printf "%s%08b" $octal . - }}
+		{{- $octal = printf "%s%08b" $octal . -}}
 	{{ end  }}
 
-	{{/* Pad to nearest multiple of 6 with 0s */ }}
+	{{/* Pad to nearest multiple of 6 with 0s */}}
 	{{ with mod (len $octal) 6  }}
 		{{ range seq 0 (sub 6 .)  }}
-			{{- $octal = print $octal 0 - }}
+			{{- $octal = print $octal 0 -}}
 		{{ end  }}
 	{{ end  }}
 
-	{{/* Split into sections of 6 length each */ }}
+	{{/* Split into sections of 6 length each */}}
 	{{ $parts := cslice  }}
 	{{ range seq 0 (div (len $octal) 6)  }}
 		{{- $start := mult . 6  }}
-		{{- $parts = $parts.Append (slice $octal $start (add $start 6)) - }}
+		{{- $parts = $parts.Append (slice $octal $start (add $start 6)) -}}
 	{{ end  }}
 
 	{{ .Set "Result" ""  }}
 	{{ range $parts  }}
 		{{- $dec := 0  }}
 		{{- range split . ""  }}
-			{{- $dec = add (mult $dec 2) (toInt .) - }}
+			{{- $dec = add (mult $dec 2) (toInt .) -}}
 		{{- end  }}
 
 		{{- $char := ""  }}
@@ -64,7 +64,7 @@
 		{{- else  }} {{- $char = "-"  }}
 		{{- end  }}
 
-		{{- $.Set "Result" (print $.Result $char) - }}
+		{{- $.Set "Result" (print $.Result $char) -}}
 	{{ end  }}
 	{{ with $ENDINGS.Get (mod (len $parts) 4)  }} {{ $.Set "Result" (print $.Result .)  }} {{ end  }}
 {{ end  }}
@@ -78,7 +78,7 @@
 	100,000 -> 999,999 -> 999k (example)
 	1,000,000 -> 9,999,999 -> 1.01m
 	...
-*/ }}
+*/}}
 {{ define "shortenNumber"  }}
 	{{ $UNITS := cslice "" "K" "M" "B" "T" "q" "Q" "S"  }}
 
@@ -132,15 +132,15 @@
 		{{ $multipliers := cslice 1048576 65536 4096 256 16 1  }}
 		{{ $hex2dec := sdict "A" 10 "B" 11 "C" 12 "D" 13 "E" 14 "F" 15  }}
 		{{ with reFindAllSubmatches `\A(?:#?default|([a-fA-F\d]{1,6}))\z` (joinStr " " (slice . 1))  }}
-			{{ $hex := "FF0000"  }} {{/*Change default color here*/ }}
+			{{ $hex := "FF0000"  }} {{/*Change default color here*/}}
 			{{ with index . 0 1  }}
 				{{ $hex = (printf "%06s" .) | upper  }}
 			{{ end  }}
 			{{ $dec := 0  }}
-			{{ range $k, $v := split $hex "" - }}
+			{{ range $k, $v := split $hex "" -}}
 				{{- $multiplier := index $multipliers $k  }}
 				{{- $num := or ($hex2dec.Get $v) $v }}
-				{{- $dec = add $dec (mult $num $multiplier) - }}
+				{{- $dec = add $dec (mult $num $multiplier) -}}
 			{{ end  }}
 			{{ dbSet $user.ID "xpColor" (str $dec)  }}
 			{{ $user.Mention  }}, I set your rank card color to `#{{ $hex  }}`.
@@ -173,15 +173,15 @@
 		{{/*
 			101 underscores with 12px font fills up the rank bar.
 			We dont want to show users a full bar, ever, so we use `roundFloor` instead of `round`.
-		*/ }}
+		*/}}
 		{{ range seq 0 (fdiv $data.Current $data.Total | mult 101.0 | roundFloor | toInt)  }}
-			{{- $bar = print $bar "_" - }}
+			{{- $bar = print $bar "_" -}}
 		{{ end  }}
 
 		{{/*
 			Name needs to be encoded in base64 as it can contain special characters.
 			Current, total XP, level, and rank need to be encoded as well as they can contain the '.' character.
-        */ }}
+        */}}
 
 		{{ $query := sdict "Input" $data.Name  }}
 		{{ template "toBase64" $query  }}
@@ -189,7 +189,7 @@
 
 		{{ $query := sdict "Input" $data.Total "Font" "Lucida Sans"  }}
 		{{ template "shortenNumber" $query  }}
-		{{ $totalX := sub 831 $query.Width  }} {{/* X coordinate at which to insert the total XP */ }}
+		{{ $totalX := sub 831 $query.Width  }} {{/* X coordinate at which to insert the total XP */}}
 		{{ $query.Set "Input" (print "/ " $query.Result " XP")  }}
 		{{ template "toBase64" $query  }}
 		{{ $total := urlquery $query.Result  }}
@@ -209,7 +209,7 @@
 		{{ $level := urlquery $query.Result  }}
 
 		{{ $base := print "https://ik.imagekit.io/" $IMAGEKIT_USERNAME "/"  }}
-		{{/* Using printf instead of print here (in most cases) so its clearer what transitions do */ }}
+		{{/* Using printf instead of print here (in most cases) so its clearer what transitions do */}}
 		{{ $transformations := cslice
 			(printf "oi-%s,oh-160,ow-160,ox-71,oy-61,oiq-100" $data.Avatar)
 			(printf "oi-%s,ox-71,oy-61" $AVATAR_CIRCLE)
