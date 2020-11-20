@@ -80,7 +80,7 @@
 	{{ else if eq (index .CmdArgs 0) "view" }}
 		{{ $channel := "*None set*" }}
 		{{ with $currentSettings.channel }} {{ $channel = printf "<#%d>" . }} {{ end }}
-		{{ $formatted := printf "**❯ Minimum XP:** %d\n**❯ Maximum XP:** %d\n**❯ Cooldown:** %s\n**❯ Level-up Channel:** %s\n**❯ Announce:** %t"
+		{{ $formatted := printf "**❯ Minimum XP:** %d\n**❯ Maximum XP:** %d\n**❯ Cooldown:** %s\n**❯ Level-up Channel:** %s\n**❯ Announce:** %s"
 			$currentSettings.min
 			$currentSettings.max
 			(humanizeDurationSeconds ($currentSettings.cooldown | toDuration))
