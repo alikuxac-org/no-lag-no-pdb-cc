@@ -45,7 +45,8 @@
 		{{ $key := index .CmdArgs 1 }} {{/* The key of the setting being set */}}
 		{{ $value := slice .CmdArgs 2 | joinStr " " }} {{/* The value of the new setting */}}
 		{{ if in (cslice "min" "max" "cooldown" "announce") $key }} {{/* Check that key is valid */}}
-			{{ $parsed := or (and (eq $key "cooldown") (toDuration $value)) (toInt $value) (and (eq $key "announce") ((eq $value "true" "false"))) }} {{/* Find the proper type of conversion needed */}}
+			{{$parsed := or (and (eq $key "cooldown") (toDuration $value)) (toInt $value) }} {{/* Find the proper type of conversion needed */}}
+			{{if eq $key "announce"}}{{$parsed = str $value}}{{end}}
 			{{ if not $parsed }} {{/* Check whether it was parsed correctly / whether it was valid value */}}
 				Please provide a valid value for the key `{{ $key }}`.
 			{{ else }}
