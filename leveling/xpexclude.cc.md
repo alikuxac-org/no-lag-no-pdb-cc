@@ -38,7 +38,7 @@
     {{ with reFindAllSubmatches `^<@!?(\d{17,19})>|(\d{17,19})$` $input }}{{ with (toInt64 (or (index . 0 1) (index . 0 2))) }}{{ $user = getMember . }}{{ end }}{{ end }}
     {{ if $user }}
         {{ range $key, $value := $userex }}
-            {{ - if eq $value (str $user.User.ID) - }}{{ - $isExclude = true - }}{{ - $index = $key - }}{{ - end - }}
+            {{- if eq $value (str $user.User.ID) -}}{{- $isExclude = true -}}{{- $index = $key -}}{{- end -}}
         {{ end }}
         {{ if $isExclude }}
         {{ if eq (len $userex) 1 }}{{ $userex = cslice }}{{ else }}{{ $data := sdict "Data" $userex "Index" $index }}{{ template "splice" $data }}{{ $userex = $data.Res }}{{ end }}
@@ -58,7 +58,7 @@
     {{ with reFindAllSubmatches `^<#(\d{17,19})>|(\d{17,19})$` $input }}{{ with (toInt64 (or (index . 0 1) (index . 0 2))) }}{{ $channel = getChannel . }}{{ end }}{{ end }}
     {{ if $channel }}
         {{ range $key, $value := $chanex }}
-            {{ - if eq $value (str $channel.ID) - }}{{ - $isExclude = true - }}{{ - $index = $key - }}{{ - end - }}
+            {{- if eq $value (str $channel.ID) -}}{{- $isExclude = true -}}{{- $index = $key -}}{{- end -}}
         {{ end }}
         {{ if $isExclude }}
         {{ if eq (len $chanex) 1 }}{{ $chanex = cslice }}{{ else }}{{ $data := sdict "Data" $chanex "Index" $index }}{{ template "splice" $data }}{{ $chanex = $data.Res }}{{ end }}
@@ -80,19 +80,19 @@
     {{ with reFindAllSubmatches `^<@&(\d{17,19})>|(\d{17,19})$` $input }}
 		{{ $id := toInt (or (index . 0 1) (index . 0 2)) }}
 		{{ range $.Guild.Roles }}
-			{{ - if eq .ID $id }} {{ $exactRole = . }} {{ end - }}
+			{{- if eq .ID $id }} {{ $exactRole = . }} {{ end -}}
 		{{ end }}
 	{{ else }}
 		{{ range .Guild.Roles }}
-			{{ - if eq (lower .Name) (lower $input) }} {{ $exactRole = . }}
-			{{ - else if inFold (lower .Name) (lower $input) }} {{ $maybeRole = . }}
-			{{ - end - }}
+			{{- if eq (lower .Name) (lower $input) }} {{ $exactRole = . }}
+			{{- else if inFold (lower .Name) (lower $input) }} {{ $maybeRole = . }}
+			{{- end -}}
 		{{ end }}
     {{ end }}
         {{ $role := or $exactRole $maybeRole }}
     {{ if $role }}
         {{ range $key, $value := $roleex }}
-            {{ - if eq $value (str $role.ID) - }}{{ - $isExclude = true - }}{{ - $index = $key - }}{{ - end - }}
+            {{- if eq $value (str $role.ID) -}}{{- $isExclude = true -}}{{- $index = $key -}}{{- end -}}
         {{ end }}
         {{ if $isExclude }}
         {{ if eq (len $roleex) 1 }}{{ $roleex = cslice }}{{ else }}{{ $data := sdict "Data" $roleex "Index" $index }}{{ template "splice" $data }}{{ $roleex = $data.Res }}{{ end }}
@@ -113,7 +113,7 @@
     {{ $channel := getChannel $input }}
     {{ if $channel }}
         {{ range $key, $value := $cateex }}
-            {{ - if eq $value (str $channel.ID) - }}{{ - $isExclude = true - }}{{ - $index = $key - }}{{ - end - }}
+            {{- if eq $value (str $channel.ID) -}}{{- $isExclude = true -}}{{- $index = $key -}}{{- end -}}
         {{ end }}
         {{ if $isExclude }}
         {{ if eq (len $cateex) 1 }}{{ $cateex = cslice }}{{ else }}{{ $data := sdict "Data" $cateex "Index" $index }}{{ template "splice" $data }}{{ $cateex = $data.Res }}{{ end }}
@@ -129,10 +129,10 @@
         Category not found.
     {{ end }}
 {{ else if eq $type "list" }}
-    {{ if eq (len $userex) 0 }}{{ $userdisplay = "None" }}{{ else }}{{ range $userex }}{{ - $userdisplay = print $userdisplay " <@" . ">" - }}{{ end }}{{ end }}
-    {{ if eq (len $chanex) 0 }}{{ $chandisplay = "None" }}{{ else }}{{ range $chanex }}{{ - $chandisplay = print $chandisplay " <#" . ">" - }}{{ end }}{{ end }}
-    {{ if eq (len $roleex) 0 }}{{ $roledisplay = "None" }}{{ else }}{{ range $roleex }}{{ - $roledisplay = print $roledisplay " <@&" . ">" - }}{{ end }}{{ end }}
-    {{ if eq (len $cateex) 0 }}{{ $catedisplay = "None" }}{{ else }}{{ range $cateex }}{{ - $catedisplay = print $catedisplay " <#" . ">" - }}{{ end }}{{ end }}
+    {{ if eq (len $userex) 0 }}{{ $userdisplay = "None" }}{{ else }}{{ range $userex }}{{- $userdisplay = print $userdisplay " <@" . ">" -}}{{ end }}{{ end }}
+    {{ if eq (len $chanex) 0 }}{{ $chandisplay = "None" }}{{ else }}{{ range $chanex }}{{- $chandisplay = print $chandisplay " <#" . ">" -}}{{ end }}{{ end }}
+    {{ if eq (len $roleex) 0 }}{{ $roledisplay = "None" }}{{ else }}{{ range $roleex }}{{- $roledisplay = print $roledisplay " <@&" . ">" -}}{{ end }}{{ end }}
+    {{ if eq (len $cateex) 0 }}{{ $catedisplay = "None" }}{{ else }}{{ range $cateex }}{{- $catedisplay = print $catedisplay " <#" . ">" -}}{{ end }}{{ end }}
     {{ $embed := sdict 
         "title" "XP Excluded List"
         "description" "This is a list about XP Excluded in this server."
@@ -151,3 +151,4 @@
 
 {{ else }}Usages: -xpexclude/xpex (role/channel/user/cate/category/list) [#channel/@user/@role/categoryID]
 {{ end }}
+```

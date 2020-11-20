@@ -14,7 +14,7 @@
 {{ if (eq (len .CmdArgs) 2)  }}
     {{ $xp := index .CmdArgs 1 | toInt  }} 
     {{ if and $xp $user  }}
-        {{ $oldXp := 0  }} {{/* Old XP */ }}
+        {{ $oldXp := 0  }} {{/* Old XP */}}
         {{ with (dbGet $user.ID "xp")  }} {{ $oldXp = .Value  }} {{ end  }}
         {{ $oldLvl := roundFloor (mult 0.1 (sqrt $oldXp))  }} 
         {{ $newXp := add $oldXp $xp }}
@@ -43,3 +43,4 @@
 	{{ end  }}
 	{{ if $toAdd  }} {{ giveRoleID $user.ID $toAdd  }} {{ end  }} 
 {{ end  }}
+```
