@@ -45,7 +45,6 @@
 
 {{/* Handle leveling up | Basically the same as whats in the message listener, so if you are curious look at that */}}
 {{ if $newLvl  }}
-    {{ execCC 40 nil 0 (sdict "leveling" 1 "user" $user.ID)  }}
     {{ $roleRewards := sdict "type" "stack"  }}
     {{ with dbGet 0 "roleRewards"  }} {{ $roleRewards = sdict .Value  }} {{ end  }}
     {{ $type := $roleRewards.type  }}
