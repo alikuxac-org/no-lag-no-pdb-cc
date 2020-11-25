@@ -70,7 +70,18 @@ Copy the commands given below, add them with the instructions given in the comme
 `-xpex cate/category categoryID` | Exclude specific category.
     - Trigger type: **Regex**
     - Trigger text: `\A(-|<@!?204255221017214977>)\s*(xpexclude|xpex)(\s+|\z)`
+9. **Leaderboard**
+- Description: This command show XP leaderboard in a server.
+- Usage:
+  `-leaderboard [page] where page is optional
+- Trigger type: **Regex**.
+- Trigger text: `\A(-|<@!?204255221017214977>)\s*(leaderboard|lb|top)(\s+|\z)`
+10. **ReactionListener**
+- Description: This command manages the pagination of the leaderboard command.
+- Usage: React valid emoji in leaderboard
+- Trigger type: **Reaction**.
+- Trigger: `Added Only`
 # Credit
 Author: [Jo3-L](https://github.com/Jo3-L/)
-From reposity: [yagpdb-cc](https://github.com/Jo3-L/yagpdb-cc)
+From reposity: [yagpdb-cc](https://github.com/yagpdb-cc/yagpdb-cc)
 Modified by **Alikuxac#4177**.
