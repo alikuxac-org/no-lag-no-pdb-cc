@@ -7,11 +7,6 @@
 - Trigger text: `\A(-|<@!?204255221017214977>)\s*(leaderboard|lb|top)(\s+|\z)`
 
 ```lua
-{{/*
-	This command manages the leaderboard. Usage is -leaderboard [page] where page is optional.
-
-	Recommended trigger: Regex trigger with trigger `^-(leaderboard|lb|top)`.
-*/}}
 {{ $page := 1 }} {{/* Default page to start at */}}
 {{ with reFind `\d+` (joinStr " " .CmdArgs) }} {{ $page = . | toInt }} {{ end }} {{/* If the user provided a page, change $page variable to that */}}
 {{ $skip := mult (sub $page 1) 10 }} {{/* Amount of entries to skip */}}
