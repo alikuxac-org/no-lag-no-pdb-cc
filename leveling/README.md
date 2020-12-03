@@ -73,7 +73,7 @@ Copy the commands given below, add them with the instructions given in the comme
 9. **Leaderboard**
 - Description: This command show XP leaderboard in a server.
 - Usage:
-  `-leaderboard [page] where page is optional
+  `-leaderboard [page]` where page is optional
 - Trigger type: **Regex**.
 - Trigger text: `\A(-|<@!?204255221017214977>)\s*(leaderboard|lb|top)(\s+|\z)`
 10. **ReactionListener**
