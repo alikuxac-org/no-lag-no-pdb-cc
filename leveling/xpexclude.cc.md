@@ -9,6 +9,7 @@
 - Trigger type: **Regex**
 - Trigger text: `\A(-|<@!?204255221017214977>)\s*(xpexclude|xpex)(\s+|\z)`
 
+- **Note**: If you are using leveling system from [yagpdb-cc's repository](https://github.com/yagpdb-cc/yagpdb-cc/tree/master/leveling), must run `-xpex default` before exclude things.
 # Code
 ```lua
 {{ define "splice" }}
@@ -145,8 +146,12 @@
         "timestamp" currentTime
  }}
     {{ sendMessage nil (cembed $embed) }}
+{{ else if eq $type "default" }}
+    {{ $settings.Set "exclude" (sdict "user" (cslice) "channel" (cslice) "role" (cslice) "category" (cslice)) }}
+    {{ dbSet 0 "xpSettings" $settings }}
+    Done! You are now using the default exclude settings for the leveling system.
 {{ else }}
-    {{ sendMessage nil (cembed "title" "XP Exclusion Help" "description" (print "`" .Cmd " user @user` to exclude specific user.\n`" .Cmd " channel @channel` to exclude specific channel.\n`" .Cmd " role @role` to exclude specific role.\n`" .Cmd " cate/category categoryID` to exclude specific category.\n`" .Cmd " list to show exclude list.\n\n**Currently support ID**")) }}
+    {{ sendMessage nil (cembed "title" "XP Exclusion Help" "description" (print "`" .Cmd " user @user` to exclude specific user.\n`" .Cmd " channel @channel` to exclude specific channel.\n`" .Cmd " role @role` to exclude specific role.\n`" .Cmd " cate/category categoryID` to exclude specific category.\n`" .Cmd " list to show exclude list.\n" .Cmd " default to reset/set-default.\n\n**Currently support ID**")) }}
 {{ end }}
 
 {{ else }}Usages: -xpexclude/xpex (role/channel/user/cate/category/list) [#channel/@user/@role/categoryID]
