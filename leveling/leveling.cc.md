@@ -8,7 +8,7 @@
 - Trigger type: **Regex**.
 - Trigger text: `\A(-|<@!?204255221017214977>)\s*(leveling|(level|lvl)-?conf|(level|lvl)-?settings)(\s+|\z)`
 
-- **Note**: If you are using leveling system from [Joe's repository](https://github.com/Jo3-L/yagpdb-cc/tree/master/leveling), just run `-leveling set announce true`.
+- **Note**: If you are using leveling system from [yagpdb-cc's repository](https://github.com/yagpdb-cc/yagpdb-cc/tree/master/leveling), just run `-leveling set announce true`.
 
 # Code
 
@@ -46,7 +46,7 @@
 		{{ $value := slice .CmdArgs 2 | joinStr " " }} {{/* The value of the new setting */}}
 		{{ if in (cslice "min" "max" "cooldown" "announce") $key }} {{/* Check that key is valid */}}
 			{{$parsed := or (and (eq $key "cooldown") (toDuration $value)) (toInt $value) }} {{/* Find the proper type of conversion needed */}}
-			{{if eq $key "announce"}}{{$parsed = str $value}}{{end}}
+			{{if and (eq $key "announce") (inFold (cslice "true" "false") $parsed)}}{{$parsed = str $value}}{{end}}
 			{{ if not $parsed }} {{/* Check whether it was parsed correctly / whether it was valid value */}}
 				Please provide a valid value for the key `{{ $key }}`.
 			{{ else }}
