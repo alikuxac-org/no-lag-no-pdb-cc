@@ -4,8 +4,11 @@
 **Code**: below
 
 ```lua
-{{$args := parseArgs 1 "-mutemyself <time>" (carg "duration" "")}}
-{{$time := $args.Get 0}}
-{{$silent := execAdmin "mute" .User.ID "Killyourself" ($time.String) }}
-You will be revive after {{$time}}
+{{$time := toDuration "30m"}}
+{{$args := parseArgs 0 "-mutemyself <time>" (carg "duration" "")}}
+{{if $args.IsSet 0}}
+{{$time = $args.Get 0}}
+{{end}}
+{{$silent := execAdmin "mute" .User.ID "Thank you for kill your self" ($time.String) }}
+You will be revive after {{$time.String}}
 ```
