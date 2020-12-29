@@ -16,12 +16,12 @@
 {{/*Code*/}}
 {{ if (dbGet .User.ID "rob_cld") }}
 Try again after {{humanizeDurationSeconds ((dbGet .User.ID "rob_cld").ExpiresAt.Sub currentTime) }}.
-{{ else}}
+{{ else }}
 {{ $target := 0 }}
 {{ with .CmdArgs}} {{$target = index . 0 | userArg }} {{ end }}
 {{ if eq (len .CmdArgs) 1 }}
-    {{if not ( eq $target.ID .User.ID) }}
-    {{ $usermoney := toInt ((dbGet .User.ID $dbname).Value)}}
+    {{if not (eq $target.ID .User.ID) }}
+    {{ $usermoney := toInt ((dbGet .User.ID $dbName).Value)}}
     {{ $targetmoney := toInt (dbGet $target.ID $dbName).Value}}
         {{ if and (gt $usermoney 0) (gt $targetmoney 0) }}
         {{ dbSetExpire .User.ID "rob_cld" "cooldown" $length}}
@@ -46,8 +46,8 @@ Try again after {{humanizeDurationSeconds ((dbGet .User.ID "rob_cld").ExpiresAt.
     {{else}}
         You can not rob yourself.
     {{end}}
-{{end}}
 {{else}}
 Wrong syntax. The syntax of this command: -rob <Mention/ID>.
+{{end}}
 {{end}}
 ```
