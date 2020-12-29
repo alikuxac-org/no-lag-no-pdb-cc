@@ -11,7 +11,7 @@
 {{range $roles}}
     {{- if lt $upos ($.Guild.Role .).Position}}{{- $upos = ($.Guild.Role .).Position}}{{- end}}
 {{end}}
-{{$name := or .User.Username .Member.Nick}}
+{{$name := or .Member.Nick .User.Username}}
 {{$reason := "No reason specific"}}
 {{$duration := ""}}
 {{$StrippedMsg := .StrippedMsg}}
